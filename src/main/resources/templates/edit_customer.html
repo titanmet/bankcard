@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Edit customer</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container text-center">
+    <table class="table">
+        <tr>
+            <th>
+                <div class="p-2">
+                    <a class="text-success" th:href="@{/indexcards}">
+                        <button type="button" class="btn btn-success btn btn-block">Главная страница</button>
+                    </a>
+                </div>
+            </th>
+            <th>
+                <div class="p-2">
+                    <form th:action="@{/logout}" method="get">
+                        <button class="btn btn-md btn-success btn btn-block" name="registration"
+                                type="Submit">Выход
+                        </button>
+                    </form>
+                </div>
+            </th>
+        </tr>
+    </table>
+    <h1>Редактирование данных клиента</h1>
+    <br />
+    <form action="#" th:action="@{/save}" th:object="${customer}"
+          method="post">
+
+        <table class="table" border="0" cellpadding="10">
+            <tr>
+                <td>Номер:</td>
+                <td>
+                    <input type="text" th:field="*{id}" readonly="readonly" />
+                </td>
+            </tr>
+            <tr>
+                <td>Ф.И.О:</td>
+                <td><input type="text" th:field="*{customerName}" /></td>
+            </tr>
+            <tr>
+                <td>Телефон:</td>
+                <td><input type="text" th:field="*{phone}" /></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><input type="text" th:field="*{email}" /></td>
+            </tr>
+            <tr>
+                <td>Дата рождения:</td>
+                <td><input type="text" th:field="*{dateOfBirth}" /></td>
+            </tr>
+            <tr>
+                <td>Банковская карта:</td>
+                <td><input type="text" th:field="*{cards}" /></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit" class="btn btn-success">Save</button> </td>
+            </tr>
+        </table>
+    </form>
+    <br>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Bank card</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="col-md-4 offset-md-2">
+        <br /><br />
+        <form th:action="@{/registration}" method="get">
+            <button class="btn btn-success btn-block" type="Submit">Перейти на страницу регистрации</button>
+        </form>
+        <form th:action="@{/login}" method="POST" class="form-signin">
+            <h3 class="form-signin-heading text-center" th:text="Вход"></h3>
+            <br/>
+
+            <input type="text" id="user_name" name="user_name" placeholder="Имя пользователя"
+                   class="form-control"/> <br/>
+            <input type="password" th:placeholder="Пароль"
+                   id="password" name="password" class="form-control"/> <br/>
+
+            <div align="center" th:if="${param.error}">
+                <p style="font-size: 20; color: #FF1C19;">Имя пользователя или пароль не зарегистрированы</p>
+            </div>
+            <button class="btn btn-lg btn-success btn-block" name="Submit" value="Login" type="Submit"
+                    th:text="Вход"></button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

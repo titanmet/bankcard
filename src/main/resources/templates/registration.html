@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-2">
+            <br/><br/>
+            <div class="col-sm-9">
+                <form th:action="@{/}" method="get">
+                    <button class="btn btn-md btn-success btn-block" type="Submit">Перейти на страницу входа</button>
+                </form>
+            </div>
+            <form autocomplete="off" action="#" th:action="@{/registration}"
+                  th:object="${user}" method="post" class="form-horizontal text-center"
+                  role="form">
+                <h2 class="col-sm-9">Регистрация нового пользователя</h2>
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                               class="validation-message"></label>
+                        <input type="text" th:field="*{name}" placeholder="Имя"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                               class="validation-message"></label>
+                        <input type="text" th:field="*{lastName}"
+                               placeholder="Фамилия" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{email}" placeholder="Email"
+                               class="form-control"/> <label
+                            th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                            class="validation-message"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{userName}" placeholder="Имя пользователя"
+                               class="form-control"/> <label
+                            th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"
+                            class="validation-message"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <input type="password" th:field="*{password}"
+                               placeholder="Пароль" class="form-control"/> <label
+                            th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                            class="validation-message"></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <button type="submit" class="btn btn-lg btn-success btn-block">Зарегистрировать</button>
+                    </div>
+                </div>
+
+                <div class="col-sm-9">
+                    <h4><span class="text-success" th:utext="${successMessage}"></span></h4>
+                    <h5><span class="text-success" th:utext="${infologin}"></span></h5>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Categories add</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container text-center">
+    <table class="table">
+        <tr>
+            <th>
+                <div class="p-2">
+                    <a class="text-success" th:href="@{/indexcards}">
+                        <button type="button" class="btn btn-success btn btn-block">Главная страница</button>
+                    </a>
+                </div>
+            </th>
+            <th>
+                <div class="p-2">
+                    <form th:action="@{/logout}" method="get">
+                        <button class="btn btn-md btn-success btn btn-block" name="registration"
+                                type="Submit">Выход
+                        </button>
+                    </form>
+                </div>
+            </th>
+        </tr>
+    </table>
+    <h1>Добавить новую категорию</h1>
+    <form th:action="@{/categories/save}" th:object="${category}" method="post" style="margin: 0 auto;">
+        <div class="m-3">
+            <div class="form-group row">
+                <label class="col-form-label col-sm-4">Наименование :</label>
+                <div class="col-sm-8">
+                    <input type="text" th:field="*{name}" placeholder="Наименование категории"
+                           class="form-control"/>
+                    <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                           class="validation-message"></label>
+                    <!--                    <input type="text" th:field="*{name}" class="form-control" required/>-->
+                    <!--                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Категория уже существует !</span>-->
+                    <!--                    <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"/>-->
+                </div>
+            </div>
+            <div class="text-center p-3">
+                <button type="submit" class="btn btn-success">Записать</button>
+            </div>
+        </div>
+    </form>
+    <br>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Card</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container text-center">
+    <table class="table">
+        <tr>
+            <th>
+                <div class="p-2">
+                    <a class="text-success" th:href="@{/indexcards}">
+                        <button type="button" class="btn btn-success btn btn-block">Главная страница</button>
+                    </a>
+                </div>
+            </th>
+            <th>
+                <div class="p-2">
+                    <form th:action="@{/logout}" method="get">
+                        <button class="btn btn-md btn-success btn btn-block" name="registration"
+                                type="Submit">Выход
+                        </button>
+                    </form>
+                </div>
+            </th>
+        </tr>
+    </table>
+    <h1>Список банковских карт клиентов</h1>
+    <form th:action="@{/searchcards}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по номеру карты" size="50">
+        <button type="submit" class="btn btn-success">Поиск</button>
+        <button type="submit" class="btn btn-success">Сброс</button>
+    </form>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=id&sortDir=' + ${reverseSortDirCard}}">
+                    Номер</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=cardNumber&sortDir=' + ${reverseSortDirCard}}">
+                    Номер карты</a></th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=creationDate&sortDir=' + ${reverseSortDirCard}}">
+                    Дата создания</a></th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=expirationDate&sortDir=' + ${reverseSortDirCard}}">
+                    Окончание действия</a></th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=pin&sortDir=' + ${reverseSortDirCard}}">
+                    Пин код</a></th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=balance&sortDir=' + ${reverseSortDirCard}}">
+                    Баланс</a></th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/card/page/' + ${currentPageCard} + '?sortField=customer.customerName&sortDir=' + ${reverseSortDirCard}}">
+                    Ф.И.О</a></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="card : ${listCards}">
+            <tr>
+                <td>[[${card.id}]]</td>
+                <td>[[${card.cardNumber}]]</td>
+                <td>[[${card.creationDate}]]</td>
+                <td>[[${card.expirationDate}]]</td>
+                <td>[[${card.pin}]]</td>
+                <td>[[${card.balance}]]</td>
+                <td>[[${card.customer.customerName}]]</td>
+                <td>
+                    <a class="text-success" th:href="@{'/card/edit/' + ${card.id}}">Редактировать</a>
+                    &nbsp;
+                    <a class="text-success" th:href="@{'/card/delete/' + ${card.id}}">Удалить</a>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <div th:if="${totalPagesCard > 1}">
+        <div class="row col-sm-10">
+            <div class="col-sm-3">
+                Total Rows: [[${totalItemsCard}]]
+            </div>
+            <div class="col-sm-3">
+					<span th:each="i: ${#numbers.sequence(1, totalPagesCard)}">
+						<a class="text-success" th:if="${currentPageCard != i}"
+                           th:href="@{'/card/page/' + ${i}+ '?sortField=' + ${sortFieldCard} + '&sortDir=' + ${sortDirCard}}">[[${i}]]</a>
+						<span th:unless="${currentPageCard != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+            </div>
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPageCard < totalPagesCard}"
+                   th:href="@{'/card/page/' + ${currentPageCard + 1}+ '?sortField=' + ${sortFieldCard} + '&sortDir=' + ${sortDirCard}}">Следующая</a>
+                <span th:unless="${currentPageCard < totalPagesCard}">Следующая</span>
+            </div>
+
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPageCard < totalPagesCard}"
+                   th:href="@{'/card/page/' + ${totalPagesCard}+ '?sortField=' + ${sortFieldCard} + '&sortDir=' + ${sortDirCard}}">Последняя</a>
+                <span th:unless="${currentPageCard < totalPagesCard}">Последняя</span>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Main</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container text-center">
+    <table>
+        <tr>
+            <h1>Клиенты и банковские карты</h1>
+        </tr>
+        <tr>
+            <th>
+                <a class="text-success" th:bgcolor="while" th:href="@{/categories}">
+                    <button type="button" class="btn btn-success btn btn-block">Список категорий клиентов</button>
+                </a>
+            </th>
+            <th>&nbsp</th>
+            <th>
+                <a class="text-success" th:href="@{/categories/new}">
+                    <button type="button" class="btn btn-success btn btn-block">Добавить категорию</button>
+                </a>
+            </th>
+            <th>&nbsp</th>
+            <th>
+                <a class="text-success" th:href="@{/customer}">
+                    <button type="button" class="btn btn-success btn btn-block">Список клиентов</button>
+                </a>
+            </th>
+            <th>&nbsp</th>
+            <th>
+                <a class="text-success" th:href="@{/customer/new}">
+                    <button type="button" class="btn btn-success btn btn-block">Добавить клиента</button>
+                </a>
+            </th>
+            <th>&nbsp</th>
+            <th>
+                <a class="text-success" th:href="@{/card}">
+                    <button type="button" class="btn btn-success btn btn-block">Список карт клиентов</button>
+                </a>
+            </th>
+            <th>&nbsp</th>
+            <th>
+                <a class="text-success" th:href="@{/card/new}">
+                    <button type="button" class="btn btn-success btn btn-block">Добавить карту</button>
+                </a>
+            </th>
+        </tr>
+        <tr>
+            <a href="https://github.com/titanmet/JavaSchoolSber"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme.png" alt="Fork me on GitHub"></a>
+        </tr>
+    </table>
+    <h3>Список клиентов</h3>
+    <form th:action="@{/searchcustomers}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по Ф.И.О клиента" size="50">
+        <button type="submit" class="btn btn-success">Поиск</button>
+        <button type="submit" class="btn btn-success">Сброс</button>
+    </form>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">
+                    Номер</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=customerName&sortDir=' + ${reverseSortDir}}">
+                    Ф.И.О</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=phone&sortDir=' + ${reverseSortDir}}">
+                    Телефон</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}">
+                    Email</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=dateOfBirth&sortDir=' + ${reverseSortDir}}">
+                    Дата рождения</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/page/' + ${currentPage} + '?sortField=category.name&sortDir=' + ${reverseSortDir}}">
+                Категория
+                </a>
+            </th>
+            <th>Банковские карты</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="customer : ${listCustomers}">
+            <tr>
+                <td>[[${customer.id}]]</td>
+                <td>[[${customer.customerName}]]</td>
+                <td>[[${customer.phone}]]</td>
+                <td>[[${customer.email}]]</td>
+                <td>[[${customer.dateOfBirth}]]</td>
+                <td>[[${customer.category.name}]]</td>
+                <td>[[${customer.cards}]]</td>
+                <td>
+                    <a class="text-success" th:href="@{'/customer/edit/' + ${customer.id}}">Редактировать</a>
+                    &nbsp;
+                    <a class="text-success" th:href="@{'/customer/delete/' + ${customer.id}}">Удалить</a>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <div th:if="${totalPages > 1}">
+        <div class="row col-sm-10">
+            <div class="col-sm-3">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class="col-sm-3">
+					<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+						<a class="text-success" th:if="${currentPage != i}"
+                           th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+						<span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+            </div>
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPage < totalPages}"
+                   th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPage < totalPages}"
+                   th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+</div>
+<table>
+    <tr>
+        <div class="col-sm-12 text-success text-center">
+            <form th:action="@{/logout}" method="get">
+                <button class="btn btn-success btn btn-block" name="registration"
+                        type="Submit">Выход
+                </button>
+            </form>
+            <div class="panel-group">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="col-sm-12 text-success text-center">
+                            <span th:utext="${userName}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </tr>
+</table>
+</body>
+</html>

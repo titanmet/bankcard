@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Categories</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container text-center">
+    <table class="table">
+        <tr>
+            <th>
+                <div class="p-2">
+                    <a class="text-success" th:href="@{/indexcards}">
+                        <button type="button" class="btn btn-success btn btn-block">Главная страница</button>
+                    </a>
+                </div>
+            </th>
+            <th>
+                <div class="p-2">
+                    <form th:action="@{/logout}" method="get">
+                        <button class="btn btn-md btn-success btn btn-block" name="registration"
+                                type="Submit">Выход
+                        </button>
+                    </form>
+                </div>
+            </th>
+        </tr>
+    </table>
+    <h1>Список категорий</h1>
+    <form th:action="@{/searchcategories}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по наименованию категории" size="50">
+        <button type="submit" class="btn btn-success">Поиск</button>
+        <button type="submit" class="btn btn-success">Сброс</button>
+    </form>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/categories/page/' + ${currentPageCat} + '?sortField=id&sortDir=' + ${reverseSortDirCat}}">
+                    Номер</a>
+            </th>
+            <th>
+                <a class="text-success"
+                   th:href="@{'/categories/page/' + ${currentPageCat} + '?sortField=name&sortDir=' + ${reverseSortDirCat}}">
+                    Наименование</a>
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="category : ${listCategories}">
+            <tr>
+                <td>[[${category.id}]]</td>
+                <td>[[${category.name}]]</td>
+                <td>
+                    <a class="text-success" th:href="@{'/categories/delete/' + ${category.id}}">Удалить</a>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <div th:if="${totalPagesCat > 1}">
+        <div class="row col-sm-10">
+            <div class="col-sm-3">
+                Total Rows: [[${totalItemsCat}]]
+            </div>
+            <div class="col-sm-3">
+					<span th:each="i: ${#numbers.sequence(1, totalPagesCat)}">
+						<a class="text-success" th:if="${currentPageCat != i}"
+                           th:href="@{'/categories/page/' + ${i}+ '?sortField=' + ${sortFieldCat} + '&sortDir=' + ${sortDirCat}}">[[${i}]]</a>
+						<span th:unless="${currentPageCat != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+            </div>
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPageCat < totalPagesCat}"
+                   th:href="@{'/categories/page/' + ${currentPageCat + 1}+ '?sortField=' + ${sortFieldCat} + '&sortDir=' + ${sortDirCat}}">Следующая</a>
+                <span th:unless="${currentPageCat < totalPagesCat}">Следующая</span>
+            </div>
+
+            <div class="col-sm-3">
+                <a class="text-success" th:if="${currentPageCat < totalPagesCat}"
+                   th:href="@{'/categories/page/' + ${totalPagesCat}+ '?sortField=' + ${sortFieldCat} + '&sortDir=' + ${sortDirCat}}">Последняя</a>
+                <span th:unless="${currentPageCat < totalPagesCat}">Последняя</span>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+</body>
+</html>
