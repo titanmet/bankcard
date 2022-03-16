@@ -38,9 +38,6 @@
                            class="form-control"/>
                     <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                            class="validation-message"></label>
-                    <!--                    <input type="text" th:field="*{name}" class="form-control" required/>-->
-                    <!--                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Категория уже существует !</span>-->
-                    <!--                    <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"/>-->
                 </div>
             </div>
             <div class="text-center p-3">

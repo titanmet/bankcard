@@ -1,6 +1,9 @@
 package com.ratnikov.bankcard.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -16,9 +19,15 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "sequence_generator")
+    @SequenceGenerator(
+            name="sequence_generator",
+            sequenceName = "user_sequence",
+            allocationSize = 1)
     @Column(name = "user_id")
-    private int id;
+    private Long id;
     @Column(name = "user_name")
     @Length(min = 5, message = "Имя пользователя должно содержать не менее 5 символов")
     @NotEmpty(message = "Укажите имя пользователя")
@@ -40,6 +49,6 @@ public class User {
     @Column(name = "active")
     private Boolean active;
     @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), foreignKey = @ForeignKey(name = "FK_USER"), inverseJoinColumns = @JoinColumn(name = "role_id"), inverseForeignKey = @ForeignKey(name = "FK_ROLE"))
     private Set<Role> roles;
 }

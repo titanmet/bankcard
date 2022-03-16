@@ -1,6 +1,9 @@
 package com.ratnikov.bankcard.controller;
 
+import com.ratnikov.bankcard.dto.CategoryDTO;
 import com.ratnikov.bankcard.model.Category;
+import com.ratnikov.bankcard.properties.ConfigurationProperties;
+import com.ratnikov.bankcard.properties.MessageProperties;
 import com.ratnikov.bankcard.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import com.ratnikov.bankcard.service.CategoryService;
@@ -16,75 +19,74 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class CategoryController {
-    private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
+    private final MessageProperties messageProperties;
+    private final ConfigurationProperties configurationProperties;
 
-    @GetMapping("/categories")
+    @RequestMapping(value = CategoryUrls.Categories.FuLL, method = RequestMethod.GET)
     public String listCategories(Model model) {
-        List<Category> listCategories = categoryRepository.findAll();
+        List<CategoryDTO> listCategories = categoryService.findAll();
         model.addAttribute("listCategories", listCategories);
         findPaginatedCategory(1, "id", "asc", model);
-        return "categories";
+        return CategoryUrls.Categories.FuLL;
     }
 
-    @GetMapping("/searchcategories")
-    public String listCategorySearch(Category category, Model model, String keyword) {
+    @RequestMapping(value = CategoryUrls.SearchCategories.FuLL, method = RequestMethod.GET)
+    public String listCategorySearch(Model model, String keyword) {
+        List<CategoryDTO> listCategories;
         if (keyword != null) {
-            List<Category> listCategories = categoryService.getByKeyword(keyword);
-            model.addAttribute("listCategories", listCategories);
+            listCategories = categoryService.getByKeyword(keyword);
         } else {
-            List<Category> listCategories = categoryRepository.findAll();
-            model.addAttribute("listCategories", listCategories);
+            listCategories = categoryService.findAll();
         }
-        return "categories";
+        model.addAttribute("listCategories", listCategories);
+        return CategoryUrls.Categories.FuLL;
     }
 
-    @RequestMapping(value="/categories/new", method = RequestMethod.GET)
-    public ModelAndView categoriesNew(){
+    @RequestMapping(value = CategoryUrls.Categories.New.FULL, method = RequestMethod.GET)
+    public ModelAndView categoriesNew() {
         ModelAndView modelAndView = new ModelAndView();
-        Category category = new Category();
-        modelAndView.addObject("category", category);
+        CategoryDTO categoryDTO = new CategoryDTO();
+        modelAndView.addObject("category", categoryDTO);
         modelAndView.setViewName("category_form");
         return modelAndView;
     }
 
-    @RequestMapping(value = "/categories/save", method = RequestMethod.POST)
+    @RequestMapping(value = CategoryUrls.Categories.Save.FULL, method = RequestMethod.POST)
     public ModelAndView showCategoryNewForm(@Valid Category category, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        Category categoryExists = categoryService.findCategoryByName(category.getName());
+        CategoryDTO categoryExists = categoryService.findCategoryByName(category.getName());
         if (categoryExists != null) {
             bindingResult
                     .rejectValue("name", "error.category",
-                            "Категория с таким именем уже есть.");
+                            messageProperties.getCategoryError());
         }
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("category_form");
         } else {
             modelAndView.addObject("category", new Category());
-            categoryRepository.save(category);
+            categoryService.save(category);
             modelAndView.setViewName("redirect:/categories");
         }
         return modelAndView;
     }
 
-    @GetMapping("/categories/delete/{id}")
-    public String deleteCategory(@PathVariable("id") Integer id) {
-        categoryRepository.deleteById(id);
+    @RequestMapping(value = CategoryUrls.Categories.Delete.DeleteId.FULL, method = {RequestMethod.DELETE, RequestMethod.GET})
+    public String deleteCategory(@PathVariable("id") Long id) {
+        categoryService.deleteById(id);
 
         return "redirect:/categories";
     }
 
-    @GetMapping("/categories/page/{pageNo}")
+    @RequestMapping(value = CategoryUrls.Categories.Page.PageNo.FULL, method = RequestMethod.GET)
     public String findPaginatedCategory(@PathVariable(value = "pageNo") int pageNo,
                                         @RequestParam("sortField") String sortField,
                                         @RequestParam("sortDir") String sortDir,
                                         Model model) {
-        int pageSize = 5;
-
-        Page<Category> page = categoryService.findPaginated(pageNo, pageSize, sortField, sortDir);
-        List<Category> listCategories = page.getContent();
+        Page<CategoryDTO> page = categoryService.findPaginated(pageNo, configurationProperties.getPageSize(), sortField, sortDir);
+        List<CategoryDTO> listCategories = page.getContent();
 
         model.addAttribute("currentPageCat", pageNo);
         model.addAttribute("totalPagesCat", page.getTotalPages());
@@ -95,6 +97,6 @@ public class CategoryController {
         model.addAttribute("reverseSortDirCat", sortDir.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("listCategories", listCategories);
-        return "categories";
+        return CategoryUrls.Categories.FuLL;
     }
 }

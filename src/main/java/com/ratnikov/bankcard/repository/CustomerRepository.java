@@ -7,13 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Integer> {
-    Customer findByCustomerName(String customerName);
-    Customer findByEmail(String email);
-    Customer findByPhone(String phone);
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    Customer findByName(String name);
 
-    @Query(value = "select * from customer c where c.customer_name like %:keyword%", nativeQuery = true)
+    Optional<Customer> findById(Long id);
+
+    @Query(value = "select * from customer c where c.name like %:keyword%", nativeQuery = true)
     List<Customer> findByKeyword(@Param("keyword") String keyword);
 }

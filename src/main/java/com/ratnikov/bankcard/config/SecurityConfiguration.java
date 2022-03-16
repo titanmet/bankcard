@@ -1,4 +1,4 @@
-package com.ratnikov.bankcard.configurated;
+package com.ratnikov.bankcard.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

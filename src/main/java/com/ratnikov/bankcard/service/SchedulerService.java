@@ -1,5 +1,6 @@
 package com.ratnikov.bankcard.service;
 
+import com.ratnikov.bankcard.dto.CardDTO;
 import com.ratnikov.bankcard.model.Card;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +13,8 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class SchedulerService {
-
     private static final String CRON = "*/59 * * * * *";
 
     private final CardService cardService;
@@ -26,12 +26,12 @@ public class SchedulerService {
         int month = date.getMonthValue();
         int day = date.getDayOfMonth();
         int year = date.getYear();
-        List<Card> cards = cardService.getCardExpirationDate(month, day ,year);
+        List<CardDTO> cards = cardService.getCardExpirationDate(month, day, year);
         if (!cards.isEmpty()) {
             cards.forEach(card -> {
                 try {
-                    String message = "Уважаемый " + card.getCustomer().getCustomerName() + " , " +
-                            "истекает срок действия банковской карты номер : " +card.getCardNumber();
+                    String message = "Уважаемый " + card.getCustomer().getName() + " , " +
+                            "истекает срок действия банковской карты номер : " + card.getNumber();
                     emailService.send(card.getCustomer().getEmail(), "Истекате срок действия банковской карты ", message);
                     log.info("Email have been sent. User id: {}, Date: {}", card.getCustomer().getId(), date);
                 } catch (Exception e) {

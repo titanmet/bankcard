@@ -50,11 +50,10 @@
             </th>
         </tr>
         <tr>
-            <a href="https://github.com/titanmet/bankcard"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme.png" alt="Fork me on GitHub"></a>
         </tr>
     </table>
     <h3>Список клиентов</h3>
-    <form th:action="@{/searchcustomers}" method="get">
+    <form th:action="@{/search-customers}" method="get">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по Ф.И.О клиента" size="50">
         <button type="submit" class="btn btn-success">Поиск</button>
         <button type="submit" class="btn btn-success">Сброс</button>
@@ -90,7 +89,7 @@
             <th>
                 <a class="text-success"
                    th:href="@{'/page/' + ${currentPage} + '?sortField=category.name&sortDir=' + ${reverseSortDir}}">
-                Категория
+                    Категория
                 </a>
             </th>
             <th>Банковские карты</th>
@@ -101,7 +100,7 @@
         <th:block th:each="customer : ${listCustomers}">
             <tr>
                 <td>[[${customer.id}]]</td>
-                <td>[[${customer.customerName}]]</td>
+                <td>[[${customer.name}]]</td>
                 <td>[[${customer.phone}]]</td>
                 <td>[[${customer.email}]]</td>
                 <td>[[${customer.dateOfBirth}]]</td>

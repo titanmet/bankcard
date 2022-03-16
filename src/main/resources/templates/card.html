@@ -29,7 +29,7 @@
         </tr>
     </table>
     <h1>Список банковских карт клиентов</h1>
-    <form th:action="@{/searchcards}" method="get">
+    <form th:action="@{/search-cards}" method="get">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по номеру карты" size="50">
         <button type="submit" class="btn btn-success">Поиск</button>
         <button type="submit" class="btn btn-success">Сброс</button>
@@ -73,12 +73,12 @@
         <th:block th:each="card : ${listCards}">
             <tr>
                 <td>[[${card.id}]]</td>
-                <td>[[${card.cardNumber}]]</td>
+                <td>[[${card.number}]]</td>
                 <td>[[${card.creationDate}]]</td>
                 <td>[[${card.expirationDate}]]</td>
                 <td>[[${card.pin}]]</td>
                 <td>[[${card.balance}]]</td>
-                <td>[[${card.customer.customerName}]]</td>
+                <td>[[${card.customer.name}]]</td>
                 <td>
                     <a class="text-success" th:href="@{'/card/edit/' + ${card.id}}">Редактировать</a>
                     &nbsp;

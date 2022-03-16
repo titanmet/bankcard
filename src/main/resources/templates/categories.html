@@ -29,7 +29,7 @@
         </tr>
     </table>
     <h1>Список категорий</h1>
-    <form th:action="@{/searchcategories}" method="get">
+    <form th:action="@{/search-categories}" method="get">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="Поиск по наименованию категории" size="50">
         <button type="submit" class="btn btn-success">Поиск</button>
         <button type="submit" class="btn btn-success">Сброс</button>

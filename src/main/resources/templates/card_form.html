@@ -29,68 +29,15 @@
         </tr>
     </table>
     <div th:if="${card.id == null}"><h1>Добавить новую банковскую карту</h1>
-    <form th:action="@{/card/save}" th:object="${card}" method="post" style="margin: 0 auto;">
-        <input type="hidden" th:field="*{id}" th:value="${card.id}"/>
-        <div class="m-3">
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Номер карты :</label>
-                <div class="col-sm-8">
-                    <input type="number" name="cardNumber" th:field="*{cardNumber}" class="form-control" required/>
-                    <span th:if="${#fields.hasErrors('cardNumber')}"
-                          th:errors="*{cardNumber}"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Дата создания :</label>
-                <div class="col-sm-8">
-                    <input type="date" name="creationDate" th:field="*{creationDate}" class="form-control" required/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Дата окончания действия :</label>
-                <div class="col-sm-8">
-                    <input type="date" name="expirationDate" th:field="*{expirationDate}" class="form-control"
-                           required/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Пин код :</label>
-                <div class="col-sm-8">
-                    <input type="number" name="pin" th:field="*{pin}" class="form-control" required/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Баланс :</label>
-                <div class="col-sm-8">
-                    <input type="number" name="balance" th:field="*{balance}" class="form-control" required/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-form-label col-sm-4">Ф.И.О клиента :</label>
-                <div class="col-sm-8">
-                    <select th:field="*{customer}" class="form-control" required>
-                        <th:block th:each="cust : ${listCustomers}">
-                            <option th:text="${cust.customerName}" th:value="${cust.id}"/>
-                        </th:block>
-                    </select>
-                </div>
-            </div>
-            <div class="text-center p-3">
-                <button type="submit" class="btn btn-success">Записать</button>
-            </div>
-        </div>
-    </form>
-    </div>
-    <div th:unless="${card.id == null}"><h1>Редактирование данных карты</h1>
-        <form th:action="@{/card/editsave}" th:object="${card}" method="post" style="margin: 0 auto;">
+        <form th:action="@{/card/save}" th:object="${card}" method="post" style="margin: 0 auto;">
             <input type="hidden" th:field="*{id}" th:value="${card.id}"/>
             <div class="m-3">
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4">Номер карты :</label>
                     <div class="col-sm-8">
-                        <input type="number" name="cardNumber" th:field="*{cardNumber}" class="form-control" required/>
-                        <span th:if="${#fields.hasErrors('cardNumber')}"
-                              th:errors="*{cardNumber}"></span>
+                        <input type="number" name="cardNumber" th:field="*{number}" class="form-control" required/>
+                        <span th:if="${#fields.hasErrors('number')}"
+                              th:errors="*{number}"></span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -123,7 +70,60 @@
                     <div class="col-sm-8">
                         <select th:field="*{customer}" class="form-control" required>
                             <th:block th:each="cust : ${listCustomers}">
-                                <option th:text="${cust.customerName}" th:value="${cust.id}"/>
+                                <option th:text="${cust.name}" th:value="${cust.id}"/>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-center p-3">
+                    <button type="submit" class="btn btn-success">Записать</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div th:unless="${card.id == null}"><h1>Редактирование данных карты</h1>
+        <form th:action="@{/card/edit-save}" th:object="${card}" method="post" style="margin: 0 auto;">
+            <input type="hidden" th:field="*{id}" th:value="${card.id}"/>
+            <div class="m-3">
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Номер карты :</label>
+                    <div class="col-sm-8">
+                        <input type="number" name="number" th:field="*{number}" class="form-control" required/>
+                        <span th:if="${#fields.hasErrors('number')}"
+                              th:errors="*{number}"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Дата создания :</label>
+                    <div class="col-sm-8">
+                        <input type="date" name="creationDate" th:field="*{creationDate}" class="form-control" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Дата окончания действия :</label>
+                    <div class="col-sm-8">
+                        <input type="date" name="expirationDate" th:field="*{expirationDate}" class="form-control"
+                               required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Пин код :</label>
+                    <div class="col-sm-8">
+                        <input type="number" name="pin" th:field="*{pin}" class="form-control" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Баланс :</label>
+                    <div class="col-sm-8">
+                        <input type="number" name="balance" th:field="*{balance}" class="form-control" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Ф.И.О клиента :</label>
+                    <div class="col-sm-8">
+                        <select th:field="*{customer}" class="form-control" required>
+                            <th:block th:each="cust : ${listCustomers}">
+                                <option th:text="${cust.name}" th:value="${cust.id}"/>
                             </th:block>
                         </select>
                     </div>

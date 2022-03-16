@@ -1,10 +1,15 @@
 package com.ratnikov.bankcard.controller;
 
+import com.ratnikov.bankcard.dto.CardDTO;
+import com.ratnikov.bankcard.dto.CustomerDTO;
 import com.ratnikov.bankcard.model.Card;
 import com.ratnikov.bankcard.model.Customer;
+import com.ratnikov.bankcard.properties.ConfigurationProperties;
+import com.ratnikov.bankcard.properties.MessageProperties;
 import com.ratnikov.bankcard.repository.CardRepository;
 import com.ratnikov.bankcard.repository.CustomerRepository;
 import com.ratnikov.bankcard.service.CardService;
+import com.ratnikov.bankcard.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,103 +23,100 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class CardController {
-
-    private final CardRepository cardRepository;
-    private final CustomerRepository customerRepository;
     private final CardService cardService;
+    private final CustomerService customerService;
+    private final MessageProperties messageProperties;
+    private final ConfigurationProperties configurationProperties;
 
-    @GetMapping("/card")
+    @RequestMapping(value = CardUrls.Card.FuLL, method = RequestMethod.GET)
     public String listCustomer(Model model) {
-        List<Card> listCards = cardRepository.findAll();
-        model.addAttribute("listCards", listCards);
+        List<CardDTO> listCardsDTO = cardService.findAll();
+        model.addAttribute("listCards", listCardsDTO);
         findPaginatedCard(1, "id", "asc", model);
-        return "card";
+        return CardUrls.Card.FuLL;
     }
 
-    @GetMapping("/searchcards")
-    public String listCardSearch(Card card, Model model, String keyword) {
+    @RequestMapping(value = CardUrls.SearchCards.FuLL, method = RequestMethod.GET)
+    public String listCardSearch(Model model, String keyword) {
         if (keyword != null) {
-            List<Card> listCards = cardService.getByKeyword(keyword);
+            List<CardDTO> listCards = cardService.getByKeyword(keyword);
             model.addAttribute("listCards", listCards);
         } else {
-            List<Card> listCards = cardRepository.findAll();
+            List<CardDTO> listCards = cardService.findAll();
             model.addAttribute("listCards", listCards);
         }
-        return "card";
+        return CardUrls.Card.FuLL;
     }
 
-    @RequestMapping(value = "/card/new", method = RequestMethod.GET)
+    @RequestMapping(value = CardUrls.Card.New.FULL, method = RequestMethod.GET)
     public ModelAndView cardNew() {
         ModelAndView modelAndView = new ModelAndView();
-        List<Customer> listCustomers = customerRepository.findAll();
+        List<CustomerDTO> listCustomers = customerService.findAll();
         modelAndView.addObject("card", new Card());
         modelAndView.addObject("listCustomers", listCustomers);
         modelAndView.setViewName("card_form");
         return modelAndView;
     }
 
-    @RequestMapping(value = "/card/save", method = RequestMethod.POST)
+    @RequestMapping(value = CardUrls.Card.Save.FULL, method = RequestMethod.POST)
     public ModelAndView showCardNewForm(@Valid Card card, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        Card cardExists = cardService.findCardByCardNumber(card.getCardNumber());
+        CardDTO cardExists = cardService.findByCardNumber(card.getNumber());
         if (cardExists != null) {
             bindingResult
-                    .rejectValue("cardNumber", "error.card",
-                            "Банковская карта с таким номером уже есть.");
-            List<Customer> listCustomers = customerRepository.findAll();
+                    .rejectValue("number", "error.card",
+                            messageProperties.getCardError());
+            List<CustomerDTO> listCustomers = customerService.findAll();
             modelAndView.addObject("listCustomers", listCustomers);
             modelAndView.setViewName("card_form");
         }
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("card_form");
         } else {
-            cardRepository.save(card);
+            cardService.save(card);
             modelAndView.setViewName("redirect:/card");
         }
         return modelAndView;
     }
 
-    @RequestMapping(value = "/card/editsave", method = RequestMethod.POST)
+    @RequestMapping(value = CardUrls.Card.EditSave.FULL, method = RequestMethod.POST)
     public ModelAndView showCardEditNewForm(@Valid Card card, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("card_form");
         } else {
-            cardRepository.save(card);
+            cardService.save(card);
             modelAndView.setViewName("redirect:/card");
         }
         return modelAndView;
     }
 
-    @GetMapping("/card/edit/{id}")
-    public String showEditCardForm(@PathVariable("id") Integer id, Model model) {
-        Card card = cardRepository.findById(id).get();
-        model.addAttribute("card", card);
-        List<Customer> listCustomers = customerRepository.findAll();
-        model.addAttribute("listCustomers", listCustomers);
+    @RequestMapping(value = CardUrls.Card.Edit.EditId.FULL, method = RequestMethod.GET)
+    public String showEditCardForm(@PathVariable("id") Long id, Model model) {
+        CardDTO cardDTO = cardService.findByCardId(id);
+        model.addAttribute("card", cardDTO);
+        List<CustomerDTO> listCustomersDTO = customerService.findAll();
+        model.addAttribute("listCustomers", listCustomersDTO);
 
         return "card_form";
     }
 
-
-    @GetMapping("/card/delete/{id}")
-    public String deleteCard(@PathVariable("id") Integer id, Model model) {
-        cardRepository.deleteById(id);
+    @RequestMapping(value = CardUrls.Card.Delete.DeleteId.FULL, method = {RequestMethod.DELETE, RequestMethod.GET})
+    public String deleteCard(@PathVariable("id") Long id) {
+        cardService.deleteById(id);
 
         return "redirect:/card";
     }
 
-    @GetMapping("/card/page/{pageNo}")
+    @RequestMapping(value = CardUrls.Card.Page.PageNo.FULL, method = RequestMethod.GET)
     public String findPaginatedCard(@PathVariable(value = "pageNo") int pageNo,
                                     @RequestParam("sortField") String sortField,
                                     @RequestParam("sortDir") String sortDir,
                                     Model model) {
-        int pageSize = 5;
-
-        Page<Card> page = cardService.findPaginated(pageNo, pageSize, sortField, sortDir);
-        List<Card> listCards = page.getContent();
+        Page<CardDTO> page = cardService.findPaginated(pageNo, configurationProperties.getPageSize(), sortField, sortDir);
+        List<CardDTO> listCards = page.getContent();
 
         model.addAttribute("currentPageCard", pageNo);
         model.addAttribute("totalPagesCard", page.getTotalPages());
@@ -125,6 +127,6 @@ public class CardController {
         model.addAttribute("reverseSortDirCard", sortDir.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("listCards", listCards);
-        return "card";
+        return CardUrls.Card.FuLL;
     }
 }
